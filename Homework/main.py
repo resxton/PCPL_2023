@@ -2,7 +2,7 @@ import telebot
 import json
 from collections import Counter
 
-TOKEN = '6325303584:AAEx2PeNZBpPnmdfXTFzNyXna-VyxbQNfzg'
+TOKEN = 'token'
 bot = telebot.TeleBot(TOKEN)
 
 # Загрузка данных о ингредиентах из файла
