@@ -29,5 +29,6 @@ def main():
     else:
         print(f"Ошибка: Статус-код {response.status_code}")
 
+
 if __name__ == "__main__":
     main()

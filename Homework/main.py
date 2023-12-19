@@ -5,11 +5,11 @@ from collections import Counter
 TOKEN = '6325303584:AAEx2PeNZBpPnmdfXTFzNyXna-VyxbQNfzg'
 bot = telebot.TeleBot(TOKEN)
 
-# Загрузка данных о ингредиентах из JSON файла
+# Загрузка данных о ингредиентах из файла
 with open('ingredients.json', 'r', encoding='utf-8') as file:
 	ingredients_data = json.load(file)
 
-# Загрузка данных о рецептах из JSON файла
+# Загрузка данных о рецептах из файла
 with open('recipes.json', 'r', encoding='utf-8') as file:
 	recipes_data = json.load(file)
 
@@ -21,8 +21,6 @@ user_ingredients = []
 def handle_start(message):
 	bot.send_message(message.chat.id,
 	                 "Привет! Я кулинарный помощник. Давай выберем блюдо! Напиши /help, чтобы узнать больше.")
-
-
 
 
 # Обработчик команды /help
@@ -81,20 +79,19 @@ def create_categories_markup():
 # Обработчик выбора ингредиентов
 @bot.message_handler(func=lambda message: message.text in sum(ingredients_data.values(), []) or message.text == "Назад")
 def handle_ingredient_selection(message):
-    if message.text == "Назад":
-        bot.send_message(message.chat.id, "Выбери категорию продуктов:", reply_markup=create_categories_markup())
-        return
+	if message.text == "Назад":
+		bot.send_message(message.chat.id, "Выбери категорию продуктов:", reply_markup=create_categories_markup())
+		return
 
-    ingredient = message.text
+	ingredient = message.text
 
-    # Проверка наличия ингредиента в списке пользователя
-    if ingredient in user_ingredients:
-        bot.send_message(message.chat.id, f"Ингредиент '{ingredient}' уже есть в вашем списке.")
-    else:
-        # Добавление выбранного ингредиента в список пользователя
-        user_ingredients.append(ingredient)
-        bot.send_message(message.chat.id, f"Ингредиент '{ingredient}' добавлен в список.")
-
+	# Проверка наличия ингредиента в списке пользователя
+	if ingredient in user_ingredients:
+		bot.send_message(message.chat.id, f"Ингредиент '{ingredient}' уже есть в вашем списке.")
+	else:
+		# Добавление выбранного ингредиента в список пользователя
+		user_ingredients.append(ingredient)
+		bot.send_message(message.chat.id, f"Ингредиент '{ingredient}' добавлен в список.")
 
 
 # Функция для поиска подходящего рецепта
@@ -103,7 +100,7 @@ def find_best_recipe(user_ingredients):
 	max_common_ingredients = 0
 
 	for recipe in recipes_data:
-		common_ingredients = len(set(user_ingredients) & set(recipe['ingredients']))
+		common_ingredients = len(set(user_ingredients) & set(recipe['ingredients'])) # & множеств
 
 		if common_ingredients > max_common_ingredients:
 			max_common_ingredients = common_ingredients
@@ -143,13 +140,13 @@ def handle_remove_ingredient(message):
 		bot.send_message(message.chat.id, f"Ингредиент '{removed_ingredient}' удален из вашего списка.")
 
 
-# Обработчик команды /ingredients
+# Обработчик команды "Показать ингредиенты"
 @bot.message_handler(func=lambda message: message.text == "Показать ингредиенты" and user_ingredients)
 def handle_show_ingredients(message):
 	handle_view_ingredients(message)
 
 
-# Обработчик команды /cook
+# Обработчик команды "Выбрать блюдо"
 @bot.message_handler(func=lambda message: message.text == "Выбрать блюдо")
 def handle_cook(message):
 	bot.send_message(message.chat.id, "Ищем подходящий рецепт...")
@@ -168,12 +165,13 @@ def handle_cook(message):
 	else:
 		bot.send_message(message.chat.id, "Извините, не удалось найти подходящий рецепт.")
 
+
 # Обработчик команды /clear
 @bot.message_handler(commands=['clear'])
 def handle_clear(message):
-    # Очистка списка user_ingredients
-    user_ingredients.clear()
-    bot.send_message(message.chat.id, "Список ингредиентов очищен.")
+	# Очистка списка user_ingredients
+	user_ingredients.clear()
+	bot.send_message(message.chat.id, "Список ингредиентов очищен.")
 
 
 # Обработчик команды /cook
@@ -193,10 +191,11 @@ def handle_cook(message):
 	else:
 		bot.send_message(message.chat.id, "Извините, не удалось найти подходящий рецепт.")
 
+
 # Обработчик неизвестных команд
 @bot.message_handler(func=lambda message: True)
 def handle_unknown(message):
-    bot.send_message(message.chat.id, "Извините, я не понимаю ваш запрос. Для справки напишите /help.")
+	bot.send_message(message.chat.id, "Извините, я не понимаю ваш запрос. Для справки напишите /help.")
 
 
 if __name__ == "__main__":
